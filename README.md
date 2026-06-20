@@ -53,12 +53,25 @@ npm run build
 
 ## 部署到线上
 
-项目已经包含两套部署配置：
+项目已经包含三套部署配置：
 
+- `.github/workflows/deploy-pages.yml`：用于 GitHub Pages 自动部署，完全免费。
 - `render.yaml`：用于 Render + GitHub Blueprint 部署。
 - `vercel.json`：用于 Vercel + GitHub 部署。
 
-### 方案一：Render
+### 方案一：GitHub Pages
+
+推送到 `main` 后，GitHub Actions 会自动构建静态站点并部署。
+
+线上地址：
+
+```text
+https://zjq0207-netizen.github.io/ai-invest-research-workspace/
+```
+
+本方案不依赖服务端和必填环境变量，适合当前 MVP。
+
+### 方案二：Render
 
 1. 确保最新代码已经推送到 GitHub。
 2. 打开 Render Dashboard。
@@ -82,7 +95,7 @@ Render Blueprint deeplink：
 https://dashboard.render.com/blueprint/new?repo=https://github.com/zjq0207-netizen/ai-invest-research-workspace
 ```
 
-### 方案二：Vercel
+### 方案三：Vercel
 
 1. 打开 Vercel Dashboard。
 2. 新建项目并导入 GitHub 仓库：`zjq0207-netizen/ai-invest-research-workspace`。

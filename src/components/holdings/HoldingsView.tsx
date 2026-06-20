@@ -9,20 +9,33 @@ import { mockGoldTransactions } from "@/data/mockGoldTransactions";
 import { calculateFilteredSummary } from "@/utils/calculations";
 import type { ComputedHolding } from "@/types/portfolio";
 
+const validCategories: HoldingCategoryFilter[] = ["ALL", "US_STOCK", "HK_STOCK", "CN_STOCK", "GOLD", "OTHER"];
+
 export function HoldingsView({
   holdings,
-  priceSource,
-  initialCategory = "ALL"
+  priceSource
 }: {
   holdings: ComputedHolding[];
   priceSource: "realtime" | "mock fallback";
-  initialCategory?: HoldingCategoryFilter;
 }) {
-  const [category, setCategory] = useState<HoldingCategoryFilter>(initialCategory);
+  const [category, setCategory] = useState<HoldingCategoryFilter>("ALL");
 
   useEffect(() => {
-    setCategory(initialCategory);
-  }, [initialCategory]);
+    const params = new URLSearchParams(window.location.search);
+    const requestedCategory = params.get("category") ?? "ALL";
+
+    if (validCategories.includes(requestedCategory as HoldingCategoryFilter)) {
+      setCategory(requestedCategory as HoldingCategoryFilter);
+    }
+  }, []);
+
+  const handleCategoryChange = (value: HoldingCategoryFilter) => {
+    setCategory(value);
+
+    const nextUrl = value === "ALL" ? window.location.pathname : `${window.location.pathname}?category=${value}`;
+    window.history.pushState(null, "", nextUrl);
+  };
+
   const filtered = useMemo(
     () => (category === "ALL" ? holdings : holdings.filter((item) => item.asset.category === category)),
     [category, holdings]
@@ -32,7 +45,7 @@ export function HoldingsView({
 
   return (
     <div className="space-y-5">
-      <CategoryTabs value={category} onChange={setCategory} />
+      <CategoryTabs value={category} onChange={handleCategoryChange} />
       <FilteredSummaryCards summary={summary} />
       <HoldingsTable holdings={filtered} showCny={category === "ALL"} updatedAt={updatedAt} priceSource={priceSource} />
       {category === "GOLD" && <GoldTransactionsTable transactions={mockGoldTransactions} />}

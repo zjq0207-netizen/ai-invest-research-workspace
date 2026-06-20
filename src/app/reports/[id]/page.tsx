@@ -5,6 +5,12 @@ import { InsightList } from "@/components/research/InsightList";
 import { ScoreBadge } from "@/components/research/ScoreBadge";
 import { getAllReports } from "@/utils/researchEngine";
 
+export function generateStaticParams() {
+  return getAllReports().map((report) => ({
+    id: report.id
+  }));
+}
+
 export default function ReportDetailPage({ params }: { params: { id: string } }) {
   const report = getAllReports().find((item) => item.id === params.id);
 
